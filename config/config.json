@@ -2,9 +2,10 @@
   "development": {
     "username": "postgres",
     "password": "postgres",
-    "database": "database_development",
+    "database": "mygram_db",
     "host": "localhost",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "logging": false
   },
   "test": {
     "username": "root",
