@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -21,10 +23,14 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           isEmail: {
             args: true,
-            msg: "Email adress already in use",
+            msg: "Email adress is not valid",
           },
         },
-        unique: true,
+        type: DataTypes.STRING,
+        unique: {
+          args: true,
+          msg: "Email address already in use",
+        },
         allowNull: false,
       },
       username: {
@@ -47,11 +53,15 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
         allowNull: false,
+        type: DataTypes.STRING,
       },
       age: {
         type: DataTypes.INTEGER,
         validate: {
-          isIn: true,
+          isInt: {
+            args: true,
+            msg: "Invalid age number",
+          },
         },
         allowNull: false,
       },
@@ -65,6 +75,14 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
     }
   );
+
+  User.beforeCreate(async (user, _) => {
+    user.id = uuidv4();
+    const hashPassword = await bcrypt.hash(user.password, 10);
+    user.password = hashPassword;
+    user.createdAt = new Date();
+    user.updatedAt = new Date();
+  });
 
   return User;
 };

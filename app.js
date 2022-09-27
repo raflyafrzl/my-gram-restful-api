@@ -6,7 +6,7 @@ const userRoute = require("./routes/users.route");
 //body-parser middleware
 app.use(express.json());
 
-app.use("/api/v1/users", userRoute);
+app.use("/users", userRoute);
 
 app.listen(process.env.PORT_EXPRESS, () => {
   console.log("server is listening to port: " + process.env.PORT_EXPRESS);
