@@ -14,6 +14,47 @@ class Users {
     });
   }
 
+  async updateUser(req, res) {
+    const { email, full_name, username, profile_image_url, age, phone_number } =
+      req.body;
+
+    const { userId } = req.params;
+    /*
+    {
+        email,
+        full_name,
+        username,
+        profile_image_url,
+        age,
+        phone_number,
+      },
+*/
+
+    try {
+      const result = await User.update(
+        {
+          full_name,
+        },
+        {
+          where: {
+            id: userId,
+          },
+          returning: true,
+        }
+      );
+
+      res.send({
+        status: "success",
+        data: result[1],
+      });
+    } catch (err) {
+      res.status(400).send({
+        status: "fail",
+        message: "there's mistake on client request.",
+      });
+    }
+  }
+
   async insertUser(req, res) {
     const {
       email,
