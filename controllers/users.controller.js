@@ -58,17 +58,17 @@ class Users {
   }
 
   async insertUser(req, res) {
-    const {
-      email,
-      full_name,
-      username,
-      password,
-      profile_image_url,
-      age,
-      phone_number,
-    } = req.body;
-
     try {
+      const {
+        email,
+        full_name,
+        username,
+        password,
+        profile_image_url,
+        age,
+        phone_number,
+      } = req.body;
+
       const result = await User.create({
         email,
         full_name,
@@ -83,10 +83,9 @@ class Users {
         data: result,
       });
     } catch (err) {
-      res.status(400).send({
-        status: "failed",
-        total: 1,
-        messsage: err,
+      res.status(400).sed({
+        status: "fail",
+        message: err.message,
       });
     }
   }

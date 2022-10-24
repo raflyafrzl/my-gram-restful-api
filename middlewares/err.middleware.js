@@ -1,11 +1,24 @@
-function errMiddleware(err, req, res, next) {
-  const status = err.status || 500;
-  const errName = err.name || "error";
+const AppError = require("../utils/app-error");
 
-  res.status(status).send({
-    status: errName,
-    message: "Fail to access endpoint",
+const errorResponse = (err, res) => {
+  res.status(err.statusCode).send({
+    status: err.status,
+    message: err.message,
   });
+};
+const validationError = (err) => {
+  const errors = Object.values(err.errors).map((value) => value.message);
+  return new AppError(errors, 400);
+};
+
+function errMiddleware(err, req, res, next) {
+  let error = Object.assign(err);
+  console.log(error.status);
+  if (err.name === "SequelizeValidationError") {
+    error = validationError(error);
+  }
+
+  errorResponse(error, res);
 }
 
 module.exports = errMiddleware;
