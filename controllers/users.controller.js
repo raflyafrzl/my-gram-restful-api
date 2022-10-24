@@ -15,46 +15,42 @@ class Users {
   }
 
   async updateUser(req, res) {
-    const { email, full_name, username, profile_image_url, age, phone_number } =
-      req.body;
+    res.send({
+      status: "test",
+    });
+    // const { email, full_name, username, profile_image_url, age, phone_number } =
+    //   req.body;
 
-    const { userId } = req.params;
+    // const { userId } = req.params;
 
-    //Data for complete change
-    /*
-    {
-        email,
-        full_name,
-        username,
-        profile_image_url,
-        age,
-        phone_number,
-      },
-*/
+    // try {
+    //   const result = await User.update(
+    //     {
+    //       full_name,
+    //       email,
+    //       username,
+    //       profile_image_url,
+    //       age,
+    //       phone_number,
+    //     },
+    //     {
+    //       where: {
+    //         id: userId,
+    //       },
+    //       returning: true,
+    //     }
+    //   );
 
-    try {
-      const result = await User.update(
-        {
-          full_name,
-        },
-        {
-          where: {
-            id: userId,
-          },
-          returning: true,
-        }
-      );
-
-      res.send({
-        status: "success",
-        data: result[1],
-      });
-    } catch (err) {
-      res.status(400).send({
-        status: "fail",
-        message: "there's mistake on client request.",
-      });
-    }
+    //   res.send({
+    //     status: "success",
+    //     data: result[1],
+    //   });
+    // } catch (err) {
+    //   res.status(400).send({
+    //     status: "fail",
+    //     message: "there's mistake on client request.",
+    //   });
+    // }
   }
 
   async insertUser(req, res) {
@@ -68,7 +64,7 @@ class Users {
       phone_number,
     } = req.body;
 
-    const result = await User.create({
+    await User.create({
       email,
       full_name,
       username,
@@ -79,17 +75,16 @@ class Users {
     });
 
     res.status(201).send({
-      data: result,
+      data: req.body,
     });
   }
 
   async loginUser(req, res) {
     const { email: email_body, password: password_body } = req.body;
-    const { email, password } = await User.findOne({
+    const result = await User.findOne({
       where: { email: email_body },
     });
-
-    const match = await bcrypt.compare(password_body, password);
+    const match = await bcrypt.compare(password_body, result.password);
 
     const token = jwt.signJwt({ email, password });
 

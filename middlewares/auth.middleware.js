@@ -5,3 +5,4 @@ function authMiddleware(req, res, next) {
   //nextFunction()
   next();
 }
+module.exports = authMiddleware;
