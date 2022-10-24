@@ -7,7 +7,10 @@ const errorResponse = (err, res) => {
   });
 };
 const validationError = (err) => {
-  const errors = Object.values(err.errors).map((value) => value.message);
+  console.log(err);
+  const errors = Object.values(err.errors).map(
+    (value) => `[${value.message}: ${value.value}]`
+  );
   return new AppError(errors, 400);
 };
 

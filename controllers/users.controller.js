@@ -58,63 +58,49 @@ class Users {
   }
 
   async insertUser(req, res) {
-    try {
-      const {
-        email,
-        full_name,
-        username,
-        password,
-        profile_image_url,
-        age,
-        phone_number,
-      } = req.body;
+    const {
+      email,
+      full_name,
+      username,
+      password,
+      profile_image_url,
+      age,
+      phone_number,
+    } = req.body;
 
-      const result = await User.create({
-        email,
-        full_name,
-        username,
-        password,
-        profile_image_url,
-        age,
-        phone_number,
-      });
+    const result = await User.create({
+      email,
+      full_name,
+      username,
+      password,
+      profile_image_url,
+      age,
+      phone_number,
+    });
 
-      res.status(201).send({
-        data: result,
-      });
-    } catch (err) {
-      res.status(400).sed({
-        status: "fail",
-        message: err.message,
-      });
-    }
+    res.status(201).send({
+      data: result,
+    });
   }
 
   async loginUser(req, res) {
-    try {
-      const { email: email_body, password: password_body } = req.body;
-      const { email, password } = await User.findOne({
-        where: { email: email_body },
-      });
+    const { email: email_body, password: password_body } = req.body;
+    const { email, password } = await User.findOne({
+      where: { email: email_body },
+    });
 
-      const match = await bcrypt.compare(password_body, password);
+    const match = await bcrypt.compare(password_body, password);
 
-      const token = jwt.signJwt({ email, password });
+    const token = jwt.signJwt({ email, password });
 
-      if (!match) {
-        throw new Error("Email/password does not match");
-      }
-
-      res.send({
-        status: "success",
-        token,
-      });
-    } catch (err) {
-      res.send({
-        status: "failed",
-        message: err.message,
-      });
+    if (!match) {
+      throw new Error("Email/password does not match");
     }
+
+    res.send({
+      status: "success",
+      token,
+    });
   }
 }
 
