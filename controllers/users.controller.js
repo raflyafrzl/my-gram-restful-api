@@ -58,7 +58,6 @@ class Users {
       phone_number,
     });
 
-    console.log(result.password);
     res.status(201).send({
       data: result,
     });
