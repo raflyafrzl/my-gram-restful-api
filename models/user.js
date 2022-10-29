@@ -76,11 +76,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  User.beforeUpdate(async (user, _) => {
+    user.updatedAt = new Date();
+  });
+
   User.beforeCreate(async (user, _) => {
     user.id = uuidv4();
     const hashPassword = await bcrypt.hash(user.password, 10);
     user.password = hashPassword;
     user.createdAt = new Date();
+    console.log(user.password);
     user.updatedAt = new Date();
   });
 

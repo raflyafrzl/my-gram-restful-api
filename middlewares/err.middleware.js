@@ -13,23 +13,38 @@ const validationError = (err) => {
   return new AppError(errors, 400);
 };
 
-const typeErrorDB = (err) => {
-  const message = "Data not found, please register first";
+const jwtError = (err) => {
+  const message = "Invalid Token. Please check the token again";
 
-  return new AppError(message, 404);
+  return new AppError(message, 403);
+};
+
+const typeError = (err) => {
+  const message = "Something went very wrong";
+
+  return new AppError(message, 500);
 };
 
 function errMiddleware(err, req, res, next) {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "Error";
-  console.log(err.name);
+
   let error = Object.assign(err);
 
   if (err.name === "SequelizeValidationError") {
     error = validationError(error);
   }
+  console.log(err);
   if (err.name === "TypeError") {
-    error = typeErrorDB(error);
+    error = typeError(error);
+  }
+  console.log(err.message);
+  if (err.name === "JsonWebTokenError") {
+    error = jwtError(error);
+  }
+
+  if (err.message.includes("split")) {
+    error = jwtError(error);
   }
 
   errorResponse(error, res);

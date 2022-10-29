@@ -5,6 +5,7 @@ const authMiddleware = require("../middlewares/auth.middleware");
 
 router.route("/register").post(catchAsync(userController.insertUser));
 router.route("/login").post(catchAsync(userController.loginUser));
+//authMiddleware,
 router.route("/:userId").put(authMiddleware, userController.updateUser);
 
 module.exports = router;

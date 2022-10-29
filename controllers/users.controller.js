@@ -1,6 +1,7 @@
 const { User } = require("../models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("../utils/jwt.func");
+const AppError = require("../utils/app-error");
 class Users {
   async getAllUsers(req, res) {
     const result = await User.findAll({
@@ -14,43 +15,26 @@ class Users {
     });
   }
 
-  async updateUser(req, res) {
-    res.send({
-      status: "test",
+  async updateUser(req, res, next) {
+    if (req.params.userId !== req.user.id) {
+      return next(new AppError("ID does not match with token", 403));
+    }
+
+    const result = await User.update(req.body, {
+      where: {
+        id: req.params.userId,
+      },
+      individualHooks: true,
     });
-    // const { email, full_name, username, profile_image_url, age, phone_number } =
-    //   req.body;
 
-    // const { userId } = req.params;
-
-    // try {
-    //   const result = await User.update(
-    //     {
-    //       full_name,
-    //       email,
-    //       username,
-    //       profile_image_url,
-    //       age,
-    //       phone_number,
-    //     },
-    //     {
-    //       where: {
-    //         id: userId,
-    //       },
-    //       returning: true,
-    //     }
-    //   );
-
-    //   res.send({
-    //     status: "success",
-    //     data: result[1],
-    //   });
-    // } catch (err) {
-    //   res.status(400).send({
-    //     status: "fail",
-    //     message: "there's mistake on client request.",
-    //   });
-    // }
+    const { id, password, createdAt, updatedAt, ...data } =
+      result[1][0].dataValues;
+    res.status(200).send({
+      status: "success",
+      data: {
+        user: data,
+      },
+    });
   }
 
   async insertUser(req, res) {
@@ -64,7 +48,7 @@ class Users {
       phone_number,
     } = req.body;
 
-    await User.create({
+    const result = await User.create({
       email,
       full_name,
       username,
@@ -74,23 +58,28 @@ class Users {
       phone_number,
     });
 
+    console.log(result.password);
     res.status(201).send({
-      data: req.body,
+      data: result,
     });
   }
 
-  async loginUser(req, res) {
+  async loginUser(req, res, next) {
     const { email: email_body, password: password_body } = req.body;
     const result = await User.findOne({
       where: { email: email_body },
     });
+
+    if (!result) return next(new AppError("Data not found", 404));
+
     const match = await bcrypt.compare(password_body, result.password);
-
-    const token = jwt.signJwt({ email, password });
-
     if (!match) {
       throw new Error("Email/password does not match");
     }
+    const token = jwt.signJwt({
+      id: result.id,
+      email: result.email,
+    });
 
     res.send({
       status: "success",
@@ -100,3 +89,7 @@ class Users {
 }
 
 module.exports = new Users();
+
+//next task
+//JWT AUTH
+//CHECK ERROR
