@@ -85,6 +85,28 @@ class Users {
       token,
     });
   }
+
+  async deleteUser(req, res) {
+    const { userId } = req.params;
+
+    const result = await User.destroy({
+      where: {
+        id: userId,
+      },
+      truncate: true,
+    });
+
+    if (!result) {
+      return next(
+        new AppError("invalid data. please check the id again.", 404)
+      );
+    }
+
+    res.send({
+      status: "success",
+      message: "Your account has been successfully deleted",
+    });
+  }
 }
 
 module.exports = new Users();

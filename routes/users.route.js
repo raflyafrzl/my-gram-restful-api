@@ -5,7 +5,10 @@ const authMiddleware = require("../middlewares/auth.middleware");
 
 router.route("/register").post(catchAsync(userController.insertUser));
 router.route("/login").post(catchAsync(userController.loginUser));
-//authMiddleware,
-router.route("/:userId").put(authMiddleware, userController.updateUser);
+
+router
+  .route("/:userId")
+  .put(authMiddleware, catchAsync(userController.updateUser))
+  .delete(authMiddleware, catchAsync(userController.deleteUser));
 
 module.exports = router;

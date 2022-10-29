@@ -14,9 +14,24 @@ module.exports = (sequelize, DataTypes) => {
   }
   Photo.init(
     {
-      title: DataTypes.STRING,
-      caption: DataTypes.TEXT,
-      poster_image_url: DataTypes.STRING,
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      caption: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      poster_image_url: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        validate: {
+          isUrl: {
+            msg: ["Url is not valid"],
+            args: true,
+          },
+        },
+      },
       userId: DataTypes.UUID,
     },
     {
