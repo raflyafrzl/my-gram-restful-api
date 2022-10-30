@@ -34,11 +34,11 @@ function errMiddleware(err, req, res, next) {
   if (err.name === "SequelizeValidationError") {
     error = validationError(error);
   }
-  console.log(err);
+
   if (err.name === "TypeError") {
     error = typeError(error);
   }
-  console.log(err.message);
+
   if (err.name === "JsonWebTokenError") {
     error = jwtError(error);
   }

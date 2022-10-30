@@ -86,21 +86,25 @@ class Users {
     });
   }
 
-  async deleteUser(req, res) {
+  async deleteUser(req, res, next) {
     const { userId } = req.params;
+
+    if (userId !== req.user.id) {
+      return next(new AppError("ID must be the same.", 403));
+    }
 
     const result = await User.destroy({
       where: {
         id: userId,
       },
-      truncate: true,
     });
-
     if (!result) {
       return next(
         new AppError("invalid data. please check the id again.", 404)
       );
     }
+
+    delete req.user;
 
     res.send({
       status: "success",
@@ -110,7 +114,3 @@ class Users {
 }
 
 module.exports = new Users();
-
-//next task
-//JWT AUTH
-//CHECK ERROR
