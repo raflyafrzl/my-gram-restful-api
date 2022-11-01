@@ -90,7 +90,7 @@ class Users {
     const { userId } = req.params;
 
     if (userId !== req.user.id) {
-      return next(new AppError("ID must be the same.", 403));
+      return next(new AppError("ID must be the same with token.", 403));
     }
 
     const result = await User.destroy({

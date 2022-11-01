@@ -16,7 +16,7 @@ module.exports = {
       poster_image_url: {
         type: Sequelize.STRING,
       },
-      userId: {
+      UserId: {
         type: Sequelize.UUID,
         references: {
           model: "Users",

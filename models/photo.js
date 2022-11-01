@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class Photo extends Model {
     /**
@@ -9,7 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsTo(models.User);
+      this.belongsTo(models.User, {
+        foreignKey: { name: "UserId", allowNull: false },
+      });
     }
   }
   Photo.init(
@@ -20,7 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       caption: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: {
+          msg: ["Caption cannot be null"],
+          args: false,
+        },
       },
       poster_image_url: {
         allowNull: false,
@@ -32,12 +38,19 @@ module.exports = (sequelize, DataTypes) => {
           },
         },
       },
-      userId: DataTypes.UUID,
+      UserId: DataTypes.UUID,
     },
     {
       sequelize,
       modelName: "Photo",
     }
   );
+
+  Photo.beforeCreate((photo, _) => {
+    photo.id = uuidv4();
+    photo.createdAt = new Date();
+    photo.updatedAt = new Date();
+  });
+
   return Photo;
 };
