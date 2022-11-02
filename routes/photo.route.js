@@ -8,4 +8,9 @@ router
   .get(catchAsync(photoController.getAllPhotos))
   .post(catchAsync(photoController.createPhoto));
 
+router
+  .route("/:photoId")
+  .put(catchAsync(photoController.updatePhoto))
+  .delete(catchAsync(photoController.deletePhoto));
+
 module.exports = router;

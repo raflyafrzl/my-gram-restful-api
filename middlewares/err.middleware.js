@@ -16,7 +16,7 @@ const validationError = (err) => {
 const jwtError = (err) => {
   const message = "Invalid Token. Please check the token again";
 
-  return new AppError(message, 403);
+  return new AppError(message, 401);
 };
 
 const typeError = (err) => {
@@ -25,14 +25,26 @@ const typeError = (err) => {
   return new AppError(message, 500);
 };
 
+const invalidUuidError = (err) => {
+  const valueId = err.message.split('"');
+  const message = `ID(${valueId[1]}) is not valid. please check again`;
+  return new AppError(message, 404);
+};
+
 function errMiddleware(err, req, res, next) {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "Error";
-  console.log(err);
+  // console.log(err);
   let error = Object.assign(err);
 
   if (err.name === "SequelizeValidationError") {
     error = validationError(error);
+  }
+
+  if (err.name === "SequelizeDatabaseError") {
+    if (err.message.includes("type uuid")) {
+      error = invalidUuidError(error);
+    }
   }
 
   if (err.name === "TypeError") {

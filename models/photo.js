@@ -51,6 +51,9 @@ module.exports = (sequelize, DataTypes) => {
     photo.createdAt = new Date();
     photo.updatedAt = new Date();
   });
+  Photo.beforeUpdate((photo, _) => {
+    photo.updatedAt = new Date();
+  });
 
   return Photo;
 };

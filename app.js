@@ -9,6 +9,7 @@ const AppError = require("./utils/app-error");
 const photoRoute = require("./routes/photo.route");
 const authMiddleware = require("./middlewares/auth.middleware");
 
+app.disable("x-powered-by");
 //Logger Middleware
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
