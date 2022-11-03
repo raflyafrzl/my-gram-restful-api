@@ -1,15 +1,19 @@
+//init
 const express = require("express");
-require("dotenv").config();
 const app = express();
+const AppError = require("./utils/app-error");
+app.disable("x-powered-by");
+//all-route
 const userRoute = require("./routes/users.route");
+const photoRoute = require("./routes/photo.route");
+const sosmedRoute = require("./routes/sosmed.route");
 
+//middleware
 const morgan = require("morgan");
 const errMiddleware = require("./middlewares/err.middleware");
-const AppError = require("./utils/app-error");
-const photoRoute = require("./routes/photo.route");
 const authMiddleware = require("./middlewares/auth.middleware");
+require("dotenv").config();
 
-app.disable("x-powered-by");
 //Logger Middleware
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -17,10 +21,12 @@ if (process.env.NODE_ENV === "development") {
 //body-parser middleware
 app.use(express.json());
 
+/* END OF MIDDLEWARE */
 app.use("/users", userRoute);
-
 app.use("/photos", authMiddleware, photoRoute);
+app.use("/socialmedias", authMiddleware, sosmedRoute);
 
+//invalid route
 app.all("*", (_, __, next) => {
   next(new AppError("Route not found", 404));
 });

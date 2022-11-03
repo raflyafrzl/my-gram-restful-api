@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 module.exports = (sequelize, DataTypes) => {
   class Social_Media extends Model {
     /**
@@ -26,6 +27,12 @@ module.exports = (sequelize, DataTypes) => {
           msg: ["Url Social Media harus terisi"],
           args: false,
         },
+        validate: {
+          isUrl: {
+            msg: ["Invalid url"],
+            args: true,
+          },
+        },
       },
       UserId: DataTypes.UUID,
     },
@@ -34,5 +41,12 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Social_Media",
     }
   );
+
+  Social_Media.beforeCreate((sosmed, _) => {
+    sosmed.id = uuidv4();
+    sosmed.createdAt = new Date();
+    sosmed.updatedAt = new Date();
+  });
+
   return Social_Media;
 };
