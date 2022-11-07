@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.hasMany(models.Photo);
+      this.hasMany(models.Social_Media);
     }
   }
   User.init(
@@ -21,23 +22,21 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       email: {
+        unique: {
+          msg: "Email address is already in use!",
+        },
+        type: DataTypes.STRING,
         validate: {
           isEmail: {
             args: true,
-            msg: "Email adress is not valid",
+            msg: "Email address is not valid",
           },
-        },
-        type: DataTypes.STRING,
-        unique: {
-          args: true,
-          msg: "Email address already in use",
         },
         allowNull: false,
       },
       username: {
         type: DataTypes.STRING,
         unique: {
-          args: true,
           msg: "Username already in use",
         },
         allowNull: false,

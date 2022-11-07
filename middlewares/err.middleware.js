@@ -10,7 +10,7 @@ const validationError = (err) => {
   const errors = Object.values(err.errors).map(
     (value) => `[${value.message}: ${value.value}]`
   );
-  return new AppError(errors, 400);
+  return new AppError(errors, 403);
 };
 
 const jwtError = (err) => {
@@ -30,16 +30,23 @@ const invalidUuidError = (err) => {
   const message = `ID(${valueId[1]}) is not valid. please check again`;
   return new AppError(message, 404);
 };
+const uniqueError = (err) => {
+  return new AppError(err.message, 403);
+};
 
 function errMiddleware(err, req, res, next) {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "Error";
-  // console.log(err);
+  console.log(err.name);
+
   let error = Object.assign(err);
   if (err.name === "SequelizeValidationError") {
     error = validationError(error);
   }
 
+  if (err.name === "SequelizeUniqueConstraintError") {
+    error = uniqueError(error);
+  }
   if (err.name === "SequelizeDatabaseError") {
     if (err.message.includes("type uuid")) {
       error = invalidUuidError(error);

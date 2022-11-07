@@ -1,4 +1,4 @@
-const { Social_Media: Sosmed } = require("../models/index");
+const { Social_Media: Sosmed, User } = require("../models/index");
 
 class SosmedController {
   async deleteSosmed(req, res) {
@@ -9,7 +9,14 @@ class SosmedController {
   }
 
   async getAllSosmed(req, res) {
-    const result = await Sosmed.findAll();
+    const result = await Sosmed.findAll({
+      include: [
+        {
+          model: User,
+          attributes: ["id", "username", "profile_image_url"],
+        },
+      ],
+    });
 
     res.send({
       status: "success",
@@ -38,8 +45,30 @@ class SosmedController {
   }
 
   async updateSosmed(req, res) {
+    const { sosId } = req.params;
+    const { id } = req.user;
+    const { social_media_url, name } = req.body;
+
+    //query Update
+    const result = await Sosmed.update(
+      {
+        name,
+        social_media_url,
+      },
+      {
+        where: {
+          id: sosId,
+          UserId: id,
+        },
+        individualHooks: true,
+      }
+    );
     res.send({
       status: "success",
+      totalUpdated: result[1].length,
+      data: {
+        social_media: result[1][0],
+      },
     });
   }
 }

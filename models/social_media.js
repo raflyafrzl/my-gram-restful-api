@@ -1,6 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 const { v4: uuidv4 } = require("uuid");
+const user = require("./user");
 module.exports = (sequelize, DataTypes) => {
   class Social_Media extends Model {
     /**
@@ -10,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.User);
     }
   }
   Social_Media.init(
@@ -48,5 +50,8 @@ module.exports = (sequelize, DataTypes) => {
     sosmed.updatedAt = new Date();
   });
 
+  Social_Media.beforeUpdate(async (sosmed, _) => {
+    sosmed.updatedAt = new Date();
+  });
   return Social_Media;
 };
