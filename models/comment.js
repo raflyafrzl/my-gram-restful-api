@@ -10,12 +10,22 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.Photo);
+      this.belongsTo(models.User);
     }
   }
   Comment.init(
     {
       UserId: DataTypes.UUID,
-      PhotoId: DataTypes.UUID,
+      PhotoId: {
+        type: DataTypes.UUID,
+        validate: {
+          isUUID: {
+            args: 4,
+            msg: "Photo ID is not valid",
+          },
+        },
+      },
       comment: {
         type: DataTypes.TEXT,
         allowNull: {

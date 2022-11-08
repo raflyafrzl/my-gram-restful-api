@@ -1,7 +1,6 @@
 const { User } = require("../models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("../utils/jwt.func");
-const AppError = require("../utils/app-error");
 class Users {
   async getAllUsers(req, res) {
     const result = await User.findAll({
@@ -19,7 +18,7 @@ class Users {
     if (req.params.userId !== req.user.id) {
       return next(new AppError("ID does not match with token", 403));
     }
-
+    //tambahkan options attributes
     const result = await User.update(req.body, {
       where: {
         id: req.params.userId,
@@ -73,7 +72,7 @@ class Users {
 
     const match = await bcrypt.compare(password_body, result.password);
     if (!match) {
-      throw new Error("Email/password does not match");
+      return next(new AppError("Email/Password does not match", 403));
     }
     const token = jwt.signJwt({
       id: result.id,

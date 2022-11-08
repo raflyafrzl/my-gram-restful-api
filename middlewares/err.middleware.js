@@ -10,7 +10,7 @@ const validationError = (err) => {
   const errors = Object.values(err.errors).map(
     (value) => `[${value.message}: ${value.value}]`
   );
-  return new AppError(errors, 403);
+  return new AppError(errors, 400);
 };
 
 const jwtError = (err) => {
@@ -31,7 +31,7 @@ const invalidUuidError = (err) => {
   return new AppError(message, 404);
 };
 const uniqueError = (err) => {
-  return new AppError(err.message, 403);
+  return new AppError(err.message, 400);
 };
 
 function errMiddleware(err, req, res, next) {

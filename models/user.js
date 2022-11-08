@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.hasMany(models.Photo);
       this.hasMany(models.Social_Media);
+      this.hasMany(models.Comment);
     }
   }
   User.init(
@@ -22,11 +23,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       email: {
-        unique: {
-          msg: "Email address is already in use!",
-        },
+        // unique: {
+        //   msg: "Email address is already in use!",
+        // },
         type: DataTypes.STRING,
         validate: {
+          notEmpty: {
+            args: true,
+            msg: "Emaill cannot be empty",
+          },
           isEmail: {
             args: true,
             msg: "Email address is not valid",
@@ -36,9 +41,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       username: {
         type: DataTypes.STRING,
-        unique: {
-          msg: "Username already in use",
-        },
+        // unique: {
+        //   msg: "Username already in use",
+        // },
         allowNull: false,
       },
       password: {
@@ -85,7 +90,6 @@ module.exports = (sequelize, DataTypes) => {
     const hashPassword = await bcrypt.hash(user.password, 10);
     user.password = hashPassword;
     user.createdAt = new Date();
-    console.log(user.password);
     user.updatedAt = new Date();
   });
 

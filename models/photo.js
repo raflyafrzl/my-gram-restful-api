@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.User, {
         foreignKey: { name: "UserId", allowNull: false },
       });
+      this.hasMany(models.Comment);
     }
   }
   Photo.init(

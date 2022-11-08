@@ -4,13 +4,12 @@ class CommentController {
   async getAllComment(req, res) {
     const { id } = req.user;
     const result = await Comment.findAll({
-      where: {
+      where: {  
         UserId: id,
       },
     });
 
     res.send({
-      status: "success",
       total: result.length,
       data: {
         comment: result,
@@ -19,12 +18,19 @@ class CommentController {
   }
 
   async insertComment(req, res) {
-    const result = await Comment.create({});
+    const { comment, PhotoId } = req.body;
+    const { id } = req.user;
+    console.log(id);
+    const result = await Comment.create({
+      comment,
+      PhotoId,
+      UserId: id,
+    });
 
-    res.send({
+    res.status(201).send({
       status: "success",
       data: {
-        comment: req.body,
+        comment: result,
       },
     });
   }
