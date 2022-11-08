@@ -7,6 +7,7 @@ app.disable("x-powered-by");
 const userRoute = require("./routes/users.route");
 const photoRoute = require("./routes/photo.route");
 const sosmedRoute = require("./routes/sosmed.route");
+const commentRoute = require("./routes/comment.route");
 
 //middleware
 const morgan = require("morgan");
@@ -25,6 +26,9 @@ app.use(express.json());
 app.use("/users", userRoute);
 app.use("/photos", authMiddleware, photoRoute);
 app.use("/socialmedias", authMiddleware, sosmedRoute);
+
+//without auth
+app.use("/comments", authMiddleware, commentRoute);
 
 //invalid route
 app.all("*", (_, __, next) => {

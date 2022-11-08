@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       profile_image_url: {
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT, 
       },
       age: {
         type: Sequelize.INTEGER,

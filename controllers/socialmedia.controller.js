@@ -1,14 +1,29 @@
 const { Social_Media: Sosmed, User } = require("../models/index");
+const AppError = require("../utils/app-error");
 
 class SosmedController {
-  async deleteSosmed(req, res) {
+  async deleteSosmed(req, res, next) {
+    const { sosId } = req.params;
+    const { id } = req.user;
+
+    const result = await Sosmed.destroy({
+      where: {
+        id: sosId,
+        UserId: id,
+      },
+    });
+
+    if (!result) {
+      return next(new AppError("Data not found, cannot delete data.", 404));
+    }
+
     res.status(200).send({
       status: "success",
       message: "Your social media has been successfully deleted",
     });
   }
 
-  async getAllSosmed(req, res) {
+  async getAllSosmed(_, res) {
     const result = await Sosmed.findAll({
       include: [
         {
