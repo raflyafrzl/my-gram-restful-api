@@ -18,6 +18,30 @@ class CommentController {
     });
   }
 
+  async updateComment(req, res, next) {
+    const { comId } = req.params;
+    const { id } = req.user;
+
+    const result = await Comment.update(req.body, {
+      where: {
+        id: comId,
+        UserId: id,
+      },
+      individualHooks: true,
+      returning: true,
+    });
+
+    // console.log(result[1][0]);
+    if (!result[1][0]) return next(new AppError("data not found", 404));
+
+    res.send({
+      status: "success",
+      data: {
+        comment: result[1][0],
+      },
+    });
+  }
+
   async deleteComment(req, res, next) {
     const { id } = req.user;
     const { comId } = req.params;
