@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const AppError = require("../utils/app-error");
 
 function authMiddleware(req, res, next) {
   //write logic code here

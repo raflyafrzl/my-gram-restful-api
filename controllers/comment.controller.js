@@ -1,19 +1,39 @@
 const { Comment, Photo } = require("../models/index");
-
+const AppError = require("../utils/app-error");
 class CommentController {
   async getAllComment(req, res) {
     const { id } = req.user;
     const result = await Comment.findAll({
-      where: {  
+      where: {
         UserId: id,
       },
     });
 
-    res.send({
+    res.status(200).send({
+      status: "success",
       total: result.length,
       data: {
         comment: result,
       },
+    });
+  }
+
+  async deleteComment(req, res, next) {
+    const { id } = req.user;
+    const { comId } = req.params;
+
+    const result = await Comment.destroy({
+      where: {
+        id: comId,
+        UserId: id,
+      },
+    });
+    console.log(id);
+    if (!result) return next(new AppError("Data not found", 404));
+
+    res.send({
+      status: "success",
+      message: "Data has been deleted successfully",
     });
   }
 

@@ -8,7 +8,6 @@ class Users {
         exclude: ["createdAt", "updatedAt"],
       },
     });
-
     res.status(200).send({
       data: result,
     });

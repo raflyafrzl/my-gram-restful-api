@@ -1,3 +1,4 @@
+const req = require("express/lib/request");
 const { Social_Media: Sosmed, User } = require("../models/index");
 const AppError = require("../utils/app-error");
 
@@ -25,6 +26,9 @@ class SosmedController {
 
   async getAllSosmed(_, res) {
     const result = await Sosmed.findAll({
+      where: {
+        UserId: req.user.id,
+      },
       include: [
         {
           model: User,

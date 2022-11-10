@@ -6,4 +6,6 @@ router
   .get(catchAsync(commentController.getAllComment))
   .post(catchAsync(commentController.insertComment));
 
+router.route("/:comId").delete(catchAsync(commentController.deleteComment));
+
 module.exports = router;
