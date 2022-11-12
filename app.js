@@ -37,6 +37,6 @@ app.all("*", (_, __, next) => {
 
 app.use(errMiddleware);
 
-app.listen(process.env.PORT_EXPRESS, () => {
-  console.log("server is listening to port: " + process.env.PORT_EXPRESS);
+app.listen(process.env.PORT, () => {
+  console.log("server is listening to port: " + process.env.PORT);
 });
