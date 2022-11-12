@@ -16,7 +16,7 @@ const authMiddleware = require("./middlewares/auth.middleware");
 require("dotenv").config();
 
 //Logger Middleware
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "production") {
   app.use(morgan("dev"));
 }
 //body-parser middleware
