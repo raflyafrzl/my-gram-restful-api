@@ -15,10 +15,14 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "postgres",
-    "password": "123",
-    "database": "mygram_db",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "use_env_variable": "DATABASE_URL",
+    "ssl": true,
+    "dialect": "postgres",
+    "protocol": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        
+      }
+    }
   }
 }
