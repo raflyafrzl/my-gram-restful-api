@@ -1,6 +1,8 @@
 const { User } = require("../models/index");
 const bcrypt = require("bcrypt");
 const jwt = require("../utils/jwt.func");
+const AppError = require("../utils/app-error");
+
 class Users {
   async getAllUsers(req, res) {
     const result = await User.findAll({
