@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
             msg: ["Url is not valid"],
             args: true,
           },
+          notEmpty:{ 
+            msg: "Poster image Url Cannot be empty", 
+            args: true
+          }
         },
       },
       UserId: DataTypes.UUID,

@@ -21,16 +21,22 @@ module.exports = (sequelize, DataTypes) => {
       full_name: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate:{ 
+          notEmpty:{ 
+            args:true, 
+            msg:"Full name cannot be empty",
+          }
+        }
       },
       email: {
-        // unique: {
-        //   msg: "Email address is already in use!",
-        // },
+        unique: {
+          msg: "Email address is already in use!",
+        },
         type: DataTypes.STRING,
         validate: {
           notEmpty: {
             args: true,
-            msg: "Emaill cannot be empty",
+            msg: "Email cannot be empty",
           },
           isEmail: {
             args: true,
@@ -39,8 +45,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       },
+
       username: {
         type: DataTypes.STRING,
+        validate:{ 
+          notEmpty:{ 
+            args: true, 
+            msg: "Username cannot be empty",
+          }
+        },
         // unique: {
         //   msg: "Username already in use",
         // },
@@ -63,6 +76,10 @@ module.exports = (sequelize, DataTypes) => {
       age: {
         type: DataTypes.INTEGER,
         validate: {
+          notEmpty:{ 
+            args: true, 
+            msg: "Age cannot be empty",
+          },
           isInt: {
             args: true,
             msg: "Invalid age number",
@@ -73,6 +90,11 @@ module.exports = (sequelize, DataTypes) => {
       phone_number: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate:{ 
+          notEmpty:{ 
+            msg:"Phone number cannot be empty"
+          }
+        }
       },
     },
     {
