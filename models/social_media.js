@@ -22,6 +22,12 @@ module.exports = (sequelize, DataTypes) => {
           msg: ["Name cannot be null"],
           args: false,
         },
+        validate:{ 
+          notEmpty:{ 
+            msg: "Social media name cannot be empty",
+            args: true, 
+          }
+        }
       },
       social_media_url: {
         type: DataTypes.TEXT,
@@ -34,6 +40,10 @@ module.exports = (sequelize, DataTypes) => {
             msg: ["Invalid url"],
             args: true,
           },
+          notEmpty:{ 
+            msg: "Social Media Url Cannot be empty", 
+            args: true,
+          }
         },
       },
       UserId: DataTypes.UUID,

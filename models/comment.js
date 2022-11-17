@@ -32,6 +32,12 @@ module.exports = (sequelize, DataTypes) => {
           args: false,
           msg: "Comment cannot be null",
         },
+        validate:{ 
+          notEmpty:{ 
+            msg: "Comment cannot be empty", 
+            args: true
+          }
+        }
       },
     },
     {
