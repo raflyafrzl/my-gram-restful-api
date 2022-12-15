@@ -8,6 +8,8 @@ const AppError = require("../utils/app-error");
 
 class PhotoController {
   async getAllPhotos(req, res, next) {
+    // const { id } = req.user;
+
     const { id } = req.user;
 
     const result = await Photo.findAll({
