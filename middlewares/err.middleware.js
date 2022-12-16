@@ -38,7 +38,6 @@ const uniqueError = (err) => {
 function errMiddleware(err, req, res, next) {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "Error";
-
   let error = Object.assign(err);
   if (err.name === "SequelizeValidationError") {
     error = validationError(error);

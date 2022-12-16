@@ -5,7 +5,6 @@ const authMiddleware = require("../middlewares/auth.middleware");
 
 router.route("/register").post(catchAsync(userController.insertUser));
 router.route("/login").post(catchAsync(userController.loginUser));
-
 router
   .route("/:userId")
   .put(authMiddleware, catchAsync(userController.updateUser))

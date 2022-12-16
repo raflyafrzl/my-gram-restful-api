@@ -19,6 +19,7 @@ class Users {
     if (req.params.userId !== req.user.id) {
       return next(new AppError("ID does not match with token", 403));
     }
+
     //tambahkan options attributes
     const result = await User.update(req.body, {
       where: {
@@ -90,7 +91,9 @@ class Users {
     const { userId } = req.params;
 
     if (userId !== req.user.id) {
-      return next(new AppError("ID must be the same with token.", 403));
+      return next(
+        new AppError("Invalid data. ID is not the same with session", 400)
+      );
     }
 
     const result = await User.destroy({
