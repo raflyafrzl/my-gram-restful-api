@@ -1,4 +1,4 @@
-const { Photo } = require("../models/index");
+const { Photo, User, Comment } = require("../models/index");
 const AppError = require("../utils/app-error");
 
 class PhotoController {
@@ -11,6 +11,17 @@ class PhotoController {
       where: {
         UserId: id,
       },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "username", "profile_image_url"],
+        },
+        {
+          model: Comment,
+
+          attributes: ["comment"],
+        },
+      ],
     });
 
     res.status(200).send({

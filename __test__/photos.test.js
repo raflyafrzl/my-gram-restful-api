@@ -89,13 +89,14 @@ describe("GET /photos", () => {
       .get("/photos")
       .set("x-access-token", `Bearer ${token}`)
       .expect(200);
-
     expect(body.data.photo[0]).toEqual({
       id: expect.any(String),
       title: expect.any(String),
       caption: expect.any(String),
       poster_image_url: expect.any(String),
       UserId: expect.any(String),
+      User: expect.any(Object),
+      Comments: [],
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
     });
@@ -133,6 +134,8 @@ describe("GET /photos", () => {
       caption: expect.any(String),
       poster_image_url: expect.any(String),
       UserId: expect.any(String),
+      User: expect.any(Object),
+      Comments: [],
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
     });
@@ -150,6 +153,8 @@ describe("GET /photos", () => {
       caption: expect.any(String),
       poster_image_url: expect.any(String),
       UserId: expect.any(String),
+      User: expect.any(Object),
+      Comments: [],
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
     });

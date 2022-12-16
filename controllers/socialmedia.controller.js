@@ -24,7 +24,7 @@ class SosmedController {
     });
   }
 
-  async getAllSosmed(_, res) {
+  async getAllSosmed(req, res) {
     const result = await Sosmed.findAll({
       where: {
         UserId: req.user.id,

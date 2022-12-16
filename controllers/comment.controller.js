@@ -1,4 +1,4 @@
-const { Comment, Photo } = require("../models/index");
+const { Comment, Photo, User } = require("../models/index");
 const AppError = require("../utils/app-error");
 class CommentController {
   async getAllComment(req, res) {
@@ -7,6 +7,16 @@ class CommentController {
       where: {
         UserId: id,
       },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "username", "profile_image_url", "phone_number"],
+        },
+        {
+          model: Photo,
+          attributes: ["id", "title", "caption", "poster_image_url"],
+        },
+      ],
     });
 
     res.status(200).send({
@@ -21,7 +31,8 @@ class CommentController {
   async updateComment(req, res, next) {
     const { comId } = req.params;
     const { id } = req.user;
-
+    if (!req.body?.comment)
+      return next(new AppError("Payload cannot be null", 400));
     const result = await Comment.update(req.body, {
       where: {
         id: comId,
@@ -31,7 +42,6 @@ class CommentController {
       returning: true,
     });
 
-    // console.log(result[1][0]);
     if (!result[1][0]) return next(new AppError("data not found", 404));
 
     res.send({
@@ -52,7 +62,6 @@ class CommentController {
         UserId: id,
       },
     });
-    console.log(id);
     if (!result) return next(new AppError("Data not found", 404));
 
     res.send({
@@ -61,10 +70,10 @@ class CommentController {
     });
   }
 
-  async insertComment(req, res) {
+  async insertComment(req, res, next) {
     const { comment, PhotoId } = req.body;
     const { id } = req.user;
-    console.log(id);
+    if (!comment) return next(new AppError("Comment cannot be null", 400));
     const result = await Comment.create({
       comment,
       PhotoId,
