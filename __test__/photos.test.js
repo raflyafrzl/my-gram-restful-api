@@ -5,7 +5,6 @@ const { sequelize } = require("../models/index");
 const { queryInterface } = sequelize;
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const req = require("express/lib/request");
 
 let generatedId = uuidv4();
 let generatedIdPhoto = uuidv4();
@@ -209,7 +208,15 @@ describe("POST /photos", () => {
       })
       .set("x-access-token", `Bearer ${token}`)
       .expect(201);
-    console.log(body);
+    expect(body.data.photo).toEqual({
+      id: expect.any(String),
+      UserId: expect.any(String),
+      poster_image_url: "http://localhost.com/icsadasdasdikiwir.png",
+      title: "POST photos2",
+      caption: "caption post",
+      updatedAt: expect.any(String),
+      createdAt: expect.any(String),
+    });
   });
   test("Should return  HTTP status code 201 when photo is created", async () => {
     const { body } = await request(app)
@@ -224,4 +231,137 @@ describe("POST /photos", () => {
   });
 });
 
-describe("PUT /photos/:photosId", () => {});
+describe("PUT /photos/:photosId", () => {
+  test("Should return HTTP status code 200 when photo is updated", async () => {
+    const { body } = await request(app)
+      .put(`/photos/${generatedIdPhoto}`)
+      .send({
+        title: "Lah diubah?",
+        caption: "caption nya diubah",
+        poster_image_url: "http://lahdiubah.com/diubah.png",
+      })
+      .set("x-access-token", `Bearer ${token}`)
+      .expect(200);
+    expect(body.data.photo).toEqual({
+      id: generatedIdPhoto,
+      title: "Lah diubah?",
+      caption: "caption nya diubah",
+      poster_image_url: "http://lahdiubah.com/diubah.png",
+      UserId: expect.any(String),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+    });
+  });
+
+  test("Should return HTTP status code 200 when photo is updated", async () => {
+    const { body } = await request(app)
+      .put(`/photos/${generatedIdPhoto}`)
+      .send({
+        title: "Ini success tapi beda test",
+        caption: "caption nya diubah",
+        poster_image_url: "http://lahdiubah.com/diubah.png",
+      })
+      .set("x-access-token", `Bearer ${token}`)
+      .expect(200);
+    expect(body.data.photo).toEqual({
+      id: generatedIdPhoto,
+      title: "Ini success tapi beda test",
+      caption: "caption nya diubah",
+      poster_image_url: "http://lahdiubah.com/diubah.png",
+      UserId: expect.any(String),
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
+    });
+  });
+
+  test("Should return HTTP status code 401 when token is invalid", async () => {
+    const { body } = await request(app)
+      .put(`/photos/${generatedIdPhoto}`)
+      .send({
+        title: "Lah diubah?",
+        caption: "caption nya diubah",
+        poster_image_url: "http://lahdiubah.com/diubah.png",
+      })
+      .set("x-access-token", `Bearer invalidToken`)
+      .expect(401);
+  });
+
+  test("Should return HTTP status code 401 when no token provided", async () => {
+    const { body } = await request(app)
+      .put(`/photos/${generatedIdPhoto}`)
+      .send({
+        title: "Lah diubah?",
+        caption: "caption nya diubah",
+        poster_image_url: "http://lahdiubah.com/diubah.png",
+      })
+      .expect(401);
+  });
+  test("Should return HTTP status code 400 when URL is not valid", async () => {
+    const { body } = await request(app)
+      .put(`/photos/${generatedIdPhoto}`)
+      .send({
+        title: "Lah diubah?",
+        caption: "caption nya diubah",
+        poster_image_url: "http://lahdiubahasdasd",
+      })
+      .set("x-access-token", `Bearer ${token}`)
+      .expect(400);
+  });
+});
+
+describe("DELETE /photos", () => {
+  test("should return http status code 200 when data is successfully deleted", async () => {
+    const { body } = await request(app)
+      .delete(`/photos/${generatedIdPhoto}`)
+      .set("x-access-token", `Bearer ${token}`)
+      .expect(200);
+    expect(body).toEqual({
+      status: "success",
+      message: "Your photo has been successfully deleted",
+    });
+  });
+
+  test("Should return http status 401 when no token provided", async () => {
+    const { body } = await request(app)
+      .delete(`/photos/${generatedIdPhoto}`)
+      .expect(401);
+    expect(body).toEqual({
+      status: "fail",
+      message: "Invalid Token. Please check the token again",
+    });
+  });
+
+  test("Should return http status 401 when no token provided", async () => {
+    const invalidID = "asdasdasd";
+    const { body } = await request(app)
+      .delete(`/photos/${invalidID}`)
+      .set("x-access-token", `Bearer ${token}`)
+      .expect(404);
+    expect(body).toEqual({
+      status: "fail",
+      message: expect.any(String),
+    });
+  });
+
+  test("Should return HTTP status code 401 when token is invalid", async () => {
+    const { body } = await request(app)
+      .delete(`/photos/${generatedIdPhoto}`)
+      .set("x-access-token", `Bearer invalidToken`)
+      .expect(401);
+    expect(body).toEqual({
+      status: "fail",
+      message: "jwt malformed",
+    });
+  });
+
+  test("Should return HTTP status code 401 when token is invalid", async () => {
+    const { body } = await request(app)
+      .delete(`/photos/${generatedIdPhoto}`)
+      .set("x-access-token", `icikiwir invalidToken`)
+      .expect(401);
+    expect(body).toEqual({
+      status: "fail",
+      message: "Invalid type of token",
+    });
+  });
+});

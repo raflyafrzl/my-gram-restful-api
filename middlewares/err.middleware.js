@@ -47,11 +47,6 @@ function errMiddleware(err, req, res, next) {
   if (err.name === "SequelizeUniqueConstraintError") {
     error = uniqueError(error);
   }
-  if (err.name === "SequelizeDatabaseError") {
-    if (err.message.includes("type uuid")) {
-      error = invalidUuidError(error);
-    }
-  }
 
   if (err.name === "TypeError") {
     error = typeError(error);
@@ -63,6 +58,11 @@ function errMiddleware(err, req, res, next) {
 
   if (err.message.includes("split")) {
     error = jwtError(error);
+  }
+  if (err.name === "SequelizeDatabaseError") {
+    if (err.message.includes("type uuid")) {
+      error = invalidUuidError(error);
+    }
   }
 
   errorResponse(error, res);
