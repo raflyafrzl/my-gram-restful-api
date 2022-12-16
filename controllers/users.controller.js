@@ -73,7 +73,7 @@ class Users {
 
     const match = await bcrypt.compare(password_body, result.password);
     if (!match) {
-      return next(new AppError("Email/Password does not match", 403));
+      return next(new AppError("Email/Password does not match", 404));
     }
     const token = jwt.signJwt({
       id: result.id,

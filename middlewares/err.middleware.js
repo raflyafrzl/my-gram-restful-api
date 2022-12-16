@@ -7,7 +7,6 @@ const errorResponse = (err, res) => {
   });
 };
 
-
 const validationError = (err) => {
   const errors = Object.values(err.errors).map(
     (value) => `[${value.message} ${value.value}]`
@@ -39,7 +38,6 @@ const uniqueError = (err) => {
 function errMiddleware(err, req, res, next) {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "Error";
-  console.log(err.name);
 
   let error = Object.assign(err);
   if (err.name === "SequelizeValidationError") {
@@ -48,11 +46,6 @@ function errMiddleware(err, req, res, next) {
 
   if (err.name === "SequelizeUniqueConstraintError") {
     error = uniqueError(error);
-  }
-  if (err.name === "SequelizeDatabaseError") {
-    if (err.message.includes("type uuid")) {
-      error = invalidUuidError(error);
-    }
   }
 
   if (err.name === "TypeError") {
@@ -65,6 +58,11 @@ function errMiddleware(err, req, res, next) {
 
   if (err.message.includes("split")) {
     error = jwtError(error);
+  }
+  if (err.name === "SequelizeDatabaseError") {
+    if (err.message.includes("type uuid")) {
+      error = invalidUuidError(error);
+    }
   }
 
   errorResponse(error, res);
