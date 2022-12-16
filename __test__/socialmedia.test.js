@@ -5,7 +5,6 @@ const bcrypt = require("bcrypt");
 const req = require("express/lib/request");
 const { v4: uuidv4 } = require("uuid");
 const { sequelize } = require("../models/index");
-const { describe } = require("node:test");
 const { queryInterface } = sequelize;
 
 let generatedId = uuidv4();
@@ -168,16 +167,18 @@ describe('POST /socialmedias', () => {
     });
   });
 
-  test("Should return  HTTP status code 400(Bad request) because field is nothing", async () => {
+  test("Should return  HTTP status code 401 when without token", async () => {
     const { body } = await request(app)
       .post("/socialmedias")
       .send({
-        poster_image_url: "http://localhost.com/icikiasdasdwir.png",
-        caption: "caption post",
+        id: generatedId,
+        name: "lala",
+        social_media_url: "https://instagram.com/sosmedkulala",
+        UserId: generatedId,
+        createdAt: new Date(),
+        updatedAt: new Date()
       })
-      .set("x-access-token", `Bearer ${token}`)
-      .expect(400);
-    expect(body.message).toMatch(/cannot be null/i);
+      .expect(401);
   });
 })
 
@@ -228,16 +229,11 @@ describe('GET /socialmedias', () => {
     });
   });
 
-  test("HTTP status code 401 get because fiel not match ", async () => {
+  test("HTTP status code 401 get when invalid token ", async () => {
     const { body } = await request(app)
       .get("/socialmedias")
-      .set("x-access-token", `Bearer ${token}`)
+      .set("x-access-token", `randomstring`)
       .expect(401);
-
-    expect(body.data.socialmedia[1]).toEqual({
-      id: expect.any(String),
-      name: expect.any(String),
-    });
   });
 })
 
@@ -302,36 +298,15 @@ describe('PUT /socialmedias/:sosId', () => {
       })
       .expect(401);
   });
-  test("Should return HTTP status code 400 when URL is not valid", async () => {
+  test("Should return HTTP status code 401 when URL is not valid", async () => {
     const { body } = await request(app)
       .put(`/socialmedia/${generatedIdSosmed}`)
       .send({
-        name: "bagus"
+        name: "lala"
       })
       .set("x-access-token", `Bearer ${token}`)
-      .expect(400);
+      .expect(401);
   });
-
-  test("Should return HTTP status code 401 field is not match", async () => {
-    const { body } = await request(app)
-      .put(`/socialmedias/${generatedIdSosmed}`)
-      .send({
-        name: "Muhammad Beckham",
-        caption: "https://instagram.com/muhammadbeckham",
-      })
-      .set("x-access-token", `Bearer ${token}`)
-      .expect(200);
-
-    expect(body.data.socialmedia).toEqual({
-      id: generatedIdSosmed,
-      name: "Muhammad Beckham",
-      social_media_url: "https://instagram.com/muhammadbeckham",
-      UserId: expect.any(String),
-      createdAt: expect.any(String),
-      updatedAt: expect.any(String),
-    });
-  });
-
 })
 
 describe('DELETE /socialmedias/sosId', () => {
